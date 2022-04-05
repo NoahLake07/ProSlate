@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 public class ProSlate extends JPanel {
 
@@ -6,7 +8,48 @@ public class ProSlate extends JPanel {
     JPanel panel = new JPanel();
 
     private void createMenu() {
+        //Where the GUI is created:
+        JMenuBar menuBar;
+        JMenu documentMenu, programMenu;
+        JMenuItem menuItem;
+        JRadioButtonMenuItem rbMenuItem;
+        JCheckBoxMenuItem cbMenuItem;
 
+        //Create the menu bar.
+        menuBar = new JMenuBar();
+
+        //Build the first menu.
+        programMenu = new JMenu("ProSlate CE");
+        programMenu.setMnemonic(KeyEvent.VK_A);
+
+
+        documentMenu = new JMenu("Documents");
+        documentMenu.setMnemonic(KeyEvent.VK_A);
+
+        menuBar.add(programMenu);
+        menuBar.add(documentMenu);
+
+//a group of radio button menu items
+        programMenu.addSeparator();
+        ButtonGroup group = new ButtonGroup();
+        rbMenuItem = new JRadioButtonMenuItem("Light Mode");
+        rbMenuItem.setSelected(true);
+        rbMenuItem.setMnemonic(KeyEvent.VK_M);
+        group.add(rbMenuItem);
+        programMenu.add(rbMenuItem);
+
+        rbMenuItem = new JRadioButtonMenuItem("Dark Mode");
+        rbMenuItem.setMnemonic(KeyEvent.VK_M);
+        group.add(rbMenuItem);
+        programMenu.add(rbMenuItem);
+
+        //a group of check box menu items
+        programMenu.addSeparator();
+        cbMenuItem = new JCheckBoxMenuItem("Sound");
+        cbMenuItem.setMnemonic(KeyEvent.VK_C);
+        programMenu.add(cbMenuItem);
+
+        frame.setJMenuBar(menuBar);
     }
 
 
@@ -28,6 +71,9 @@ public class ProSlate extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setResizable(false);
+
+        // turn on menu items
+        
     }
 
     public static void main(String s[]) {
