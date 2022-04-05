@@ -1,5 +1,4 @@
 import javax.swing.*;
-import static javax.swing.SwingConstants.SOUTH;
 
 public class ProSlate extends JPanel {
 
