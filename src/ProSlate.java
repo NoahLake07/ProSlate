@@ -51,6 +51,7 @@ public class ProSlate extends GraphicsProgram {
 
         // creating the main navBar
         add(navBar,0-NAV_PADDING,getHeight()-navBar.getHeight());
+        navBar.setVisible(true);
         navBar.setFilled(true);
         navBar.setFillColor(new Color(138, 182, 194));
 
@@ -68,9 +69,6 @@ public class ProSlate extends GraphicsProgram {
         double buttonXPos = 0;
         switch(currentPg){
             case "Slate":
-                buttonXPos = slateButton.getX();
-                break;
-            case "Documents":
                 buttonXPos = slateButton.getX();
                 break;
 
