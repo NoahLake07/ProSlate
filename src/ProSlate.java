@@ -1,83 +1,92 @@
+import acm.graphics.GRect;
+import acm.program.GraphicsProgram;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
-public class ProSlate extends JPanel {
+public class ProSlate extends GraphicsProgram {
 
-    JFrame frame = new JFrame("JFrame Example");
-    JPanel panel = new JPanel();
+    // creating global variables for the navigation system
+    public final String[] pages = new String[]{ "Slate","Documents" };
+    public String currentPg = "Slate";
 
-    private void createMenu() {
-        //Where the GUI is created:
-        JMenuBar menuBar;
-        JMenu documentMenu, programMenu;
-        JMenuItem menuItem;
-        JRadioButtonMenuItem rbMenuItem;
-        JCheckBoxMenuItem cbMenuItem;
+    // creating local variables to assist with UI
+    final double NAV_PADDING = 5;
+    final double NAV_BTN_PADDING = 48;
+    final double EST_BTN_HEIGHT = 30;
 
-        //Create the menu bar.
-        menuBar = new JMenuBar();
+    // instantiating the navigation JButtons
+    JButton slateButton = new JButton("Slate");
 
-        //Build the first menu.
-        programMenu = new JMenu("ProSlate CE");
-        programMenu.setMnemonic(KeyEvent.VK_A);
+    // instantiating the navigation bar
+    GRect navBar = new GRect(getWidth() + (NAV_PADDING * 2),getHeight()/7);
 
+    // instantiating the navIndication GRect
+    GRect navIndication = new GRect(30,3);
 
-        documentMenu = new JMenu("Documents");
-        documentMenu.setMnemonic(KeyEvent.VK_A);
-
-        menuBar.add(programMenu);
-        menuBar.add(documentMenu);
-
-//a group of radio button menu items
-        programMenu.addSeparator();
-        ButtonGroup group = new ButtonGroup();
-        rbMenuItem = new JRadioButtonMenuItem("Light Mode");
-        rbMenuItem.setSelected(true);
-        rbMenuItem.setMnemonic(KeyEvent.VK_M);
-        group.add(rbMenuItem);
-        programMenu.add(rbMenuItem);
-
-        rbMenuItem = new JRadioButtonMenuItem("Dark Mode");
-        rbMenuItem.setMnemonic(KeyEvent.VK_M);
-        group.add(rbMenuItem);
-        programMenu.add(rbMenuItem);
-
-        //a group of check box menu items
-        programMenu.addSeparator();
-        cbMenuItem = new JCheckBoxMenuItem("Sound");
-        cbMenuItem.setMnemonic(KeyEvent.VK_C);
-        programMenu.add(cbMenuItem);
-
-        frame.setJMenuBar(menuBar);
+    @Override
+    public void init(){
+        createNavBar();
     }
 
+    @Override
+    public void actionPerformed(ActionEvent ae){
+        // checking to see which button was pressed and acting accordingly
+        switch(ae.getActionCommand()){
 
-    private void startup(){
+            // navigation
+            case "Slate":
+                print("Slate Button Pressed");
+                currentPg = "Slate";
+                print("Page changed to: " + currentPg);
+                break;
 
-        // adding additional components to the panel
-        createMenu();
 
-        JButton slatePgBtn = new JButton("Slate");
-        JButton documentsPgBtn = new JButton("Documents");
-        slatePgBtn.setVisible(true);
-
-        // adding the panel to the frame
-        frame.add(panel);
-
-        // specifying behaviors and positions
-        frame.setSize(900, 500);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.setResizable(false);
-
-        // turn on menu items
-        
+            // settings
+            // TODO: ADD SETTINGS
+        }
     }
 
-    public static void main(String s[]) {
+    private void createNavBar(){
+
+        // creating the main navBar
+        add(navBar,0-NAV_PADDING,getHeight()-navBar.getHeight());
+        navBar.setFilled(true);
+        navBar.setFillColor(new Color(138, 182, 194));
+
+        // adding the slate navButton
+        add(slateButton, NAV_BTN_PADDING,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
+
+        // adding the action listeners to the buttons
+        addActionListeners();
+
+    }
+
+    private void positionNavIndication(){
+
+        // setting the navigation reference x position to whatever the page is
+        double buttonXPos = 0;
+        switch(currentPg){
+            case "Slate":
+                buttonXPos = slateButton.getX();
+                break;
+            case "Documents":
+                buttonXPos = slateButton.getX();
+                break;
+
+        }
+
+        // positioning the navIndication
+        add(navIndication,buttonXPos,navBar.getY() - (navBar.getHeight()/4 * 3));
+    }
+
+    public void print(String text){
+        System.out.println("ProSlate: [" + text + "]");
+    }
+
+    public static void main(String[] args) {
         ProSlate x = new ProSlate();
-        x.startup();
+        x.start();
     }
-}  
+
+}
