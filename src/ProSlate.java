@@ -13,13 +13,13 @@ public class ProSlate extends GraphicsProgram {
     // creating local variables to assist with UI
     final double NAV_PADDING = 5;
     final double NAV_BTN_PADDING = 48;
-    final double EST_BTN_HEIGHT = 30;
+    final double EST_BTN_HEIGHT = 55;
 
     // instantiating the navigation JButtons
     JButton slateButton = new JButton("Slate");
 
     // instantiating the navigation bar
-    GRect navBar = new GRect(getWidth() + (NAV_PADDING * 2),getHeight()/7);
+    GRect navBar = new GRect(0,0); // will be rebounded later
 
     // instantiating the navIndication GRect
     GRect navIndication = new GRect(30,3);
@@ -27,6 +27,8 @@ public class ProSlate extends GraphicsProgram {
     @Override
     public void init(){
         createNavBar();
+        positionNavIndication();
+        createSlateSystem();
     }
 
     @Override
@@ -41,15 +43,19 @@ public class ProSlate extends GraphicsProgram {
                 print("Page changed to: " + currentPg);
                 break;
 
-
             // settings
             // TODO: ADD SETTINGS
         }
     }
 
+    private void createSlateSystem(){
+        
+    }
+
     private void createNavBar(){
 
         // creating the main navBar
+        navBar.setSize(getWidth() + (NAV_PADDING * 2),getHeight()/6);
         add(navBar,0-NAV_PADDING,getHeight()-navBar.getHeight());
         navBar.setVisible(true);
         navBar.setFilled(true);
@@ -71,11 +77,12 @@ public class ProSlate extends GraphicsProgram {
             case "Slate":
                 buttonXPos = slateButton.getX();
                 break;
-
         }
 
         // positioning the navIndication
-        add(navIndication,buttonXPos,navBar.getY() - (navBar.getHeight()/4 * 3));
+        add(navIndication,buttonXPos+15,navBar.getY() + navBar.getHeight() - navBar.getHeight()/4 - 17);
+        navIndication.setFilled(true);
+        navIndication.setFillColor(new Color(47, 194, 28));
     }
 
     public void print(String text){
