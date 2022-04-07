@@ -3,6 +3,8 @@ import acm.program.GraphicsProgram;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import static java.lang.String.valueOf;
 
 public class ProSlate extends GraphicsProgram {
 
@@ -12,17 +14,19 @@ public class ProSlate extends GraphicsProgram {
 
     // creating local variables to assist with UI
     final double NAV_PADDING = 5;
-    final double NAV_BTN_PADDING = 48;
-    final double EST_BTN_HEIGHT = 55;
+    final double NAV_BTN_PADDING = 75;
+    final double EST_BTN_HEIGHT = 32;
 
     // instantiating the navigation JButtons
     JButton slateButton = new JButton("Slate");
 
     // instantiating the navigation bar
-    GRect navBar = new GRect(0,0); // will be rebounded later
+    GRect navBar = new GRect(0,0); // will be resized later
 
-    // instantiating the navIndication GRect
-    GRect navIndication = new GRect(30,3);
+    // instantiating the navIndication GRects
+    GRect navIndication = new GRect(0,0); // will be resized later
+
+    Font x = new Font("Serif", Font.PLAIN, 50);
 
     @Override
     public void init(){
@@ -35,7 +39,6 @@ public class ProSlate extends GraphicsProgram {
     public void actionPerformed(ActionEvent ae){
         // checking to see which button was pressed and acting accordingly
         switch(ae.getActionCommand()){
-
             // navigation
             case "Slate":
                 print("Slate Button Pressed");
@@ -49,7 +52,9 @@ public class ProSlate extends GraphicsProgram {
     }
 
     private void createSlateSystem(){
-        
+        JLabel scene = new JLabel("Scene");
+        add(scene, getWidth()/15,getHeight()/15);
+        scene.setFont(x);
     }
 
     private void createNavBar(){
@@ -62,7 +67,7 @@ public class ProSlate extends GraphicsProgram {
         navBar.setFillColor(new Color(138, 182, 194));
 
         // adding the slate navButton
-        add(slateButton, NAV_BTN_PADDING,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
+        add(slateButton, NAV_BTN_PADDING*1,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
 
         // adding the action listeners to the buttons
         addActionListeners();
@@ -80,9 +85,11 @@ public class ProSlate extends GraphicsProgram {
         }
 
         // positioning the navIndication
-        add(navIndication,buttonXPos+15,navBar.getY() + navBar.getHeight() - navBar.getHeight()/4 - 17);
+        navIndication.setSize(navBar.getWidth()/3,navBar.getHeight());
+        add(navIndication,navBar.getX(),navBar.getY());
         navIndication.setFilled(true);
-        navIndication.setFillColor(new Color(47, 194, 28));
+        navIndication.setFillColor(new Color(88, 126, 133));
+        navIndication.sendToFront();
     }
 
     public void print(String text){
