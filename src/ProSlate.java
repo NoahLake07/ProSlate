@@ -12,6 +12,12 @@ import static java.lang.String.valueOf;
 
 public class ProSlate extends GraphicsProgram {
 
+    // creating custom font
+    Font font1Light = new Font("Sans Serif", Font.BOLD, 80);
+    Font font2Light = new Font("Sans Serif", Font.PLAIN, 40);
+    Font font1Dark = new Font("Sans Serif", Font.BOLD, 80);
+    Font font2Dark = new Font("Sans Serif", Font.PLAIN, 40);
+
     //creating checkboxes for settings
     JCheckBox soundCkBox = new JCheckBox("Sound");
     JCheckBox flashScreen = new JCheckBox("Flash");
@@ -97,6 +103,7 @@ public class ProSlate extends GraphicsProgram {
                 break;
             case "Dark Mode":
                 print("Dark Mode Enabled");
+                updatePage();
                 break;
         }
     }
@@ -105,18 +112,14 @@ public class ProSlate extends GraphicsProgram {
         // set up padding scalable ratio
         int padding = 10;
 
-        // creating custom font
-        Font font1 = new Font("Sans Serif", Font.BOLD, 80);
-        Font font2 = new Font("Sans Serif", Font.PLAIN, 40);
-
         // scene
         add(scene, getWidth()/padding,getHeight()/padding);
-        scene.setFont(font1);
+        scene.setFont(font1Light);
         scene.setSize(400,80);
 
         // take
         add(take,getWidth()/padding,getHeight()/padding + 100);
-        take.setFont(font2);
+        take.setFont(font2Light);
         take.setSize(400,50);
 
         // adding the start button to the screen
@@ -150,6 +153,9 @@ public class ProSlate extends GraphicsProgram {
         flashScreen.setSelected(true);
         add(secondFlash, paddingFromLeft, flashScreen.getY() + paddingFromOption);
         flashScreen.setSelected(true);
+        // graphic checkboxes
+        add(darkMode,paddingFromLeft, secondFlash.getY() + paddingFromOption + paddingFromSection);
+        darkMode.setSelected(false);
         // credits
         add(credit, navBar.getX() + NAV_BTN_PADDING/3, navBar.getY() - 30);
         credit.setFont(creditFont);
@@ -228,6 +234,18 @@ public class ProSlate extends GraphicsProgram {
     }
 
     private void updatePage(){
+
+        // adjusting to dark mode
+        if(darkMode.isSelected()){
+            setBackground(new Color(44, 44, 44));
+            take.setFont(font2Dark);
+            scene.setFont(font1Dark);
+        } else {
+            setBackground(Color.white);
+            take.setFont(font2Light);
+            scene.setFont(font1Light);
+        }
+
         if (currentPg.equals("Slate")) {
 
             // hiding other page components
@@ -301,6 +319,7 @@ public class ProSlate extends GraphicsProgram {
         secondFlash.setVisible(false);
         credit.setVisible(false);
         settingsHeader.setVisible(false);
+        darkMode.setVisible(false);
     }
 
     private void showSettings(){
@@ -309,6 +328,7 @@ public class ProSlate extends GraphicsProgram {
         secondFlash.setVisible(true);
         credit.setVisible(true);
         settingsHeader.setVisible(true);
+        darkMode.setVisible(true);
     }
 
     public void playSound(String pathname){
