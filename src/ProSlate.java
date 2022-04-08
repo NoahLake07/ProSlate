@@ -1,3 +1,4 @@
+import acm.graphics.GLine;
 import acm.graphics.GRect;
 import acm.program.GraphicsProgram;
 
@@ -10,6 +11,16 @@ import java.io.File;
 import static java.lang.String.valueOf;
 
 public class ProSlate extends GraphicsProgram {
+
+    //creating checkboxes for settings
+    JCheckBox soundCkBox = new JCheckBox("Sound");
+    JCheckBox flashScreen = new JCheckBox("Flash");
+    JCheckBox secondFlash = new JCheckBox("Second Flash");
+    JCheckBox darkMode = new JCheckBox("Dark Mode");
+
+    // creating labels for settings
+    JLabel credit = new JLabel("Created by Lakeside Films");
+    JLabel settingsHeader = new JLabel("Settings");
 
     // creating global variables for slate
     int currentScene = 1;
@@ -25,26 +36,34 @@ public class ProSlate extends GraphicsProgram {
     // creating local variables to assist with UI
     final double NAV_PADDING = 5;
     final double NAV_BTN_PADDING = 75;
-    final double EST_BTN_HEIGHT = 32;
+    final double EST_BTN_HEIGHT = 29;
 
     // instantiating the navigation and slate JButtons
     JButton slateButton = new JButton("Slate");
     JButton docButton = new JButton("Documents");
     JButton startSlateBtn = new JButton("Start");
+    JButton settingsButton = new JButton("Settings");
 
     // instantiating the navigation bar
     GRect navBar = new GRect(0,0); // will be resized later
 
-    // instantiating the navIndication GRects
-    GRect navIndication = new GRect(0,0); // will be resized later
-
-    Font x = new Font("Serif", Font.PLAIN, 50);
+    // instantiating the navIndication GRects and GLines
+    GRect[] navIndication = new GRect[]{
+            new GRect(getWidth()/3,navBar.getHeight()),
+            new GRect(getWidth()/3,navBar.getHeight()),
+            new GRect(getWidth()/3,navBar.getHeight()),
+            new GRect(getWidth()/3,navBar.getHeight())};
+    GLine divider1 = new GLine(navIndication[1].getX(),navBar.getY(),navIndication[1].getX(),navBar.getY() + navBar.getHeight());
+    GLine divider2 = new GLine(navIndication[2].getX(),navBar.getY(),navIndication[2].getX(),navBar.getY() + navBar.getHeight());
 
     @Override
     public void init(){
         createNavBar();
         positionNavIndication();
         createSlateSystem();
+        createDocumentSystem();
+        createSettings();
+        updatePage();
     }
 
     @Override
@@ -56,48 +75,30 @@ public class ProSlate extends GraphicsProgram {
                 print("Slate button pressed");
                 currentPg = "Slate";
                 print("Page changed to: " + currentPg);
-                take.setVisible(true);
-                scene.setVisible(true);
-                startSlateBtn.setVisible(true);
+                updatePage();
                 break;
             case "Documents":
                 print("Documents button pressed");
                 currentPg = "Documents";
                 print("Page changed to: " + currentPg);
-                take.setVisible(false);
-                scene.setVisible(false);
-                startSlateBtn.setVisible(false);
+                updatePage();
                 break;
             case "Start":
                 // * one of these method calls will output an error message due to not being on both computers at once.
                 playSound("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/sounds/Slate Sound WAV.wav"); // macbook air pathname
-                playSound("insert pathname here"); // zephyrus 16 pathname
+                 // playSound("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/sounds/Slate Sound WAV.wav"); // zephyrus 16 pathname
                 flashScreen();
                 break;
+            case "Settings":
+                print("Settings button pressed");
+                currentPg = "Settings";
+                print("Page changed to: " + currentPg);
+                updatePage();
+                break;
+            case "Dark Mode":
+                print("Dark Mode Enabled");
+                break;
         }
-    }
-
-    private void flashScreen(){
-        new Thread(new Runnable() {
-            public void run() {
-                GRect flash = new GRect(getWidth(), getHeight());
-                add(flash,0,0);
-                flash.setFilled(true);
-                flash.sendToFront();
-                flash.setVisible(true);
-                flash.setFillColor(new Color(238, 255, 0));
-                slateButton.setVisible(false);
-                docButton.setVisible(false);
-                startSlateBtn.setVisible(false);
-                pause(130);
-                flash.setFillColor(new Color(0, 140, 255));
-                pause(132);
-                flash.setVisible(false);
-                slateButton.setVisible(true);
-                docButton.setVisible(true);
-                startSlateBtn.setVisible(true);
-            }
-        }).start();
     }
 
     private void createSlateSystem(){
@@ -125,6 +126,36 @@ public class ProSlate extends GraphicsProgram {
         addActionListeners();
     }
 
+    private void createDocumentSystem(){
+
+    }
+
+    private void createSettings(){
+        Font creditFont = new Font("Sans Serif", Font.PLAIN, 10);
+        Font headerFont = new Font ("Sans Serif",Font.BOLD,34);
+
+        int paddingFromLeft = getWidth()/10;
+        int paddingFromSection = getWidth()/60;
+        int paddingFromOption = getWidth()/35;
+
+        // header
+        add(settingsHeader,getWidth()/15,getHeight()/14);
+        settingsHeader.setFont(headerFont);
+        settingsHeader.setSize(300,40);
+        // sound checkbox
+        add(soundCkBox, paddingFromLeft,getHeight()/14 + 45 + paddingFromSection);
+        soundCkBox.setSelected(true);
+        // flash checkboxes
+        add(flashScreen, paddingFromLeft, soundCkBox.getY() + paddingFromOption + paddingFromSection);
+        flashScreen.setSelected(true);
+        add(secondFlash, paddingFromLeft, flashScreen.getY() + paddingFromOption);
+        flashScreen.setSelected(true);
+        // credits
+        add(credit, navBar.getX() + NAV_BTN_PADDING/3, navBar.getY() - 30);
+        credit.setFont(creditFont);
+        credit.setSize(200,15);
+    }
+
     private void createNavBar(){
 
         // creating the main navBar
@@ -137,29 +168,159 @@ public class ProSlate extends GraphicsProgram {
         // adding the slate navButton
         add(slateButton, NAV_BTN_PADDING*1,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
 
+        // adding the settings navButton
+        add(settingsButton,navBar.getWidth() - NAV_BTN_PADDING - 95 ,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
+        print("settingsButton.getHeight = " + settingsButton.getHeight());
+        print("settingsButton.getWidth = " + settingsButton.getWidth());
+
         // adding the documents navButton
-        add(docButton, getWidth() - NAV_BTN_PADDING - 116,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
-        print(docButton.getWidth());
+        add(docButton, getWidth()/2 - 116/2,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
+        print("docBtn.getWidth = " + docButton.getWidth());
         // adding the action listeners to the buttons
         addActionListeners();
     }
 
     private void positionNavIndication() {
-        navIndication.setSize(navBar.getWidth()/3,navBar.getHeight());
-        add(navIndication,navBar.getX(),navBar.getY());
-        navIndication.setFilled(true);
-        navIndication.setFillColor(new Color(88, 126, 133));
-        navIndication.sendToFront();
+        for (int i = 0; i < 3; i++) {
+            navIndication[i].setSize(navBar.getWidth()/3,navBar.getHeight());
+            add(navIndication[i],navBar.getX() + navBar.getWidth()/3 * i,navBar.getY());
+            navIndication[i].setFilled(true);
+            navIndication[i].setFillColor(new Color(88, 126, 133));
+            navIndication[i].sendToFront();
+            navIndication[i].setVisible(false);
+        }
+        add(divider1);
+        add(divider2);
+    }
+
+    private void flashScreen(){
+        new Thread(new Runnable() {
+            public void run() {
+                // instantiating and adding the flash
+                GRect flash = new GRect(getWidth(), getHeight());
+                add(flash,0,0);
+
+                // first flash
+                if(flashScreen.isSelected()) {
+                    flash.setFilled(true);
+                    flash.sendToFront();
+                    flash.setVisible(true);
+                    flash.setFillColor(new Color(238, 255, 0));
+                    slateButton.setVisible(false);
+                    docButton.setVisible(false);
+                    startSlateBtn.setVisible(false);
+                    pause(130);
+
+                    // second flash
+                    if(secondFlash.isSelected()) {
+                        flash.setFillColor(new Color(255, 0, 251));
+                        pause(132);
+                        flash.setVisible(false);
+                    }
+                    slateButton.setVisible(true);
+                    docButton.setVisible(true);
+                    startSlateBtn.setVisible(true);
+                }
+                flash.setVisible(false);
+                destroy();
+            }
+        }).start();
+    }
+
+    private void updatePage(){
+        if (currentPg.equals("Slate")) {
+
+            // hiding other page components
+            hideSettings();
+            hideDocument();
+
+            // showing current page components
+            showSlate();
+
+            // updating the navIndication GRects
+            navIndication[0].setVisible(true);
+            navIndication[1].setVisible(false);
+            navIndication[2].setVisible(false);
+
+        }
+        if (currentPg.equals("Documents")) {
+
+            // hiding other page components
+            hideSlate();
+            hideSettings();
+
+            // showing current page components
+
+            // updating the navIndication GRects
+            navIndication[0].setVisible(false);
+            navIndication[1].setVisible(true);
+            navIndication[2].setVisible(false);
+
+        }
+        if (currentPg.equals("Settings")) {
+
+            // hiding other page components
+            hideSlate();
+
+            // showing current page components
+            showSettings();
+
+            // updating the navIndication GRects
+            navIndication[0].setVisible(false);
+            navIndication[1].setVisible(false);
+            navIndication[2].setVisible(true);
+
+        }
+        divider1.sendToFront();
+        divider2.sendToFront();
+    }
+
+    private void hideSlate(){
+        take.setVisible(false);
+        scene.setVisible(false);
+        startSlateBtn.setVisible(false);
+    }
+
+    private void showSlate(){
+        take.setVisible(true);
+        scene.setVisible(true);
+        startSlateBtn.setVisible(true);
+    }
+
+    private void hideDocument(){
+
+    }
+
+    private void showDocument(){
+
+    }
+
+    private void hideSettings(){
+        soundCkBox.setVisible(false);
+        flashScreen.setVisible(false);
+        secondFlash.setVisible(false);
+        credit.setVisible(false);
+        settingsHeader.setVisible(false);
+    }
+
+    private void showSettings(){
+        soundCkBox.setVisible(true);
+        flashScreen.setVisible(true);
+        secondFlash.setVisible(true);
+        credit.setVisible(true);
+        settingsHeader.setVisible(true);
     }
 
     public void playSound(String pathname){
-        File lol = new File(pathname);
-        try{
-            Clip clip = AudioSystem.getClip();
-            clip.open(AudioSystem.getAudioInputStream(lol));
-            clip.start();
-        } catch (Exception e){
-            e.printStackTrace();
+        if(soundCkBox.isSelected() == false) {
+            File file = new File(pathname);
+            try {
+                Clip clip = AudioSystem.getClip();
+                clip.open(AudioSystem.getAudioInputStream(file));
+                clip.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
