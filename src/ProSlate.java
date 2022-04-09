@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import static java.lang.String.valueOf;
 
@@ -101,9 +103,6 @@ public class ProSlate extends GraphicsProgram {
                 updatePage();
                 break;
             case "Start":
-                // * one of these method calls will output an error message due to not being on both computers at once.
-                playSound("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/sounds/Slate Sound WAV.wav"); // macbook air pathname
-                 // zephyrus 16 pathname
                 flashScreen();
                 break;
             case "Settings":
@@ -223,7 +222,7 @@ public class ProSlate extends GraphicsProgram {
         if(systemOS.contains("Windows")){
             print("Windows System detected.");
             windowsNavBar();
-        } else if (systemOS.contains("macOS") || systemOS.contains("Apple")){
+        } else if (systemOS.contains("macOS") || systemOS.contains("Mac OS")){
             print("macOS System detected.");
             macOsNavBar();
         } else {
@@ -256,7 +255,8 @@ public class ProSlate extends GraphicsProgram {
                 take.setVisible(false);
                 scene.setVisible(false);
 
-                playSound("C:/Users/noahl/Documents/Documents/Programming/Projects/ProSlate/resources/Slate Sound WAV.wav");
+                // playSound("C:/Users/noahl/Documents/Documents/Programming/Projects/ProSlate/resources/Slate Sound WAV.wav");
+                playSound("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/sounds/Slate Sound WAV.wav");
 
                 if(darkMode.isSelected()){
                     // first flash
@@ -430,8 +430,27 @@ public class ProSlate extends GraphicsProgram {
         darkMode.setVisible(true);
     }
 
+    private void fixedPlaySound(String pathname){
+        try {
+            // Open an audio input stream.
+            URL url = this.getClass().getClassLoader().getResource(pathname);
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+            // Get a sound clip resource.
+            Clip clip = AudioSystem.getClip();
+            // Open audio clip and load samples from the audio input stream.
+            clip.open(audioIn);
+            clip.start();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+}
+
     public void playSound(String pathname){
-        if(soundCkBox.isSelected() == false) {
+        if(soundCkBox.isSelected() == true) {
             File file = new File(pathname);
             try {
                 Clip clip = AudioSystem.getClip();
