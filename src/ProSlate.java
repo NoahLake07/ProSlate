@@ -1,6 +1,7 @@
 import acm.graphics.GLine;
 import acm.graphics.GRect;
 import acm.program.GraphicsProgram;
+import svu.csc213.Dialog;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -11,6 +12,9 @@ import java.io.File;
 import static java.lang.String.valueOf;
 
 public class ProSlate extends GraphicsProgram {
+
+    // system variables
+    String systemOS = OsUtils.getOS();
 
     // creating custom font
     Font font1Light = new Font("Sans Serif", Font.BOLD, 80);
@@ -49,6 +53,12 @@ public class ProSlate extends GraphicsProgram {
     JButton docButton = new JButton("Documents");
     JButton startSlateBtn = new JButton("Start");
     JButton settingsButton = new JButton("Settings");
+    JButton addScene = new JButton("(+) Scene");
+    JButton subScene = new JButton("(-) Scene");
+    JButton addShot = new JButton("(+) Shot");
+    JButton subShot = new JButton("(-) Shot");
+    JButton addTake = new JButton("(+) Take");
+    JButton subTake = new JButton("(-) Take");
 
     // instantiating the navigation bar
     GRect navBar = new GRect(0,0); // will be resized later
@@ -64,6 +74,7 @@ public class ProSlate extends GraphicsProgram {
 
     @Override
     public void init(){
+        new OsUtils();
         createNavBar();
         positionNavIndication();
         createSlateSystem();
@@ -92,7 +103,7 @@ public class ProSlate extends GraphicsProgram {
             case "Start":
                 // * one of these method calls will output an error message due to not being on both computers at once.
                 playSound("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/sounds/Slate Sound WAV.wav"); // macbook air pathname
-                 // playSound("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/sounds/Slate Sound WAV.wav"); // zephyrus 16 pathname
+                 // zephyrus 16 pathname
                 flashScreen();
                 break;
             case "Settings":
@@ -162,8 +173,31 @@ public class ProSlate extends GraphicsProgram {
         credit.setSize(200,15);
     }
 
-    private void createNavBar(){
+    private void windowsNavBar(){
 
+        double navBtnY = navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2 - navBar.getHeight()/7;
+
+        // creating the main navBar
+        navBar.setSize(getWidth() + (NAV_PADDING * 2),getHeight()/6);
+        add(navBar,0-NAV_PADDING,getHeight()-navBar.getHeight());
+        navBar.setVisible(true);
+        navBar.setFilled(true);
+        navBar.setFillColor(new Color(138, 182, 194));
+
+        // adding the slate navButton
+        add(slateButton, NAV_BTN_PADDING*1,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2 - navBar.getHeight()/7);
+
+        // adding the settings navButton
+        add(settingsButton,navBar.getWidth() - NAV_BTN_PADDING - 95 ,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2 - navBar.getHeight()/7);
+
+        // adding the documents navButton
+        add(docButton, getWidth()/2 - 116/2,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2 - navBar.getHeight()/7);
+
+        // adding the action listeners to the buttons
+        addActionListeners();
+    }
+
+    private void macOsNavBar(){
         // creating the main navBar
         navBar.setSize(getWidth() + (NAV_PADDING * 2),getHeight()/6);
         add(navBar,0-NAV_PADDING,getHeight()-navBar.getHeight());
@@ -176,14 +210,28 @@ public class ProSlate extends GraphicsProgram {
 
         // adding the settings navButton
         add(settingsButton,navBar.getWidth() - NAV_BTN_PADDING - 95 ,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
-        print("settingsButton.getHeight = " + settingsButton.getHeight());
-        print("settingsButton.getWidth = " + settingsButton.getWidth());
 
         // adding the documents navButton
         add(docButton, getWidth()/2 - 116/2,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2);
-        print("docBtn.getWidth = " + docButton.getWidth());
         // adding the action listeners to the buttons
         addActionListeners();
+    }
+
+    private void createNavBar(){
+
+        // checks for OS compatibility
+        if(systemOS.contains("Windows")){
+            print("Windows System detected.");
+            windowsNavBar();
+        } else if (systemOS.contains("macOS") || systemOS.contains("Apple")){
+            print("macOS System detected.");
+            macOsNavBar();
+        } else {
+            print("SYSTEM NOT SUPPORTED.");
+            Dialog.showMessage("THIS OPERATING SYSTEM IS NOT SUPPORTED.");
+            System.exit(0);
+        }
+
     }
 
     private void positionNavIndication() {
@@ -205,29 +253,64 @@ public class ProSlate extends GraphicsProgram {
                 // instantiating and adding the flash
                 GRect flash = new GRect(getWidth(), getHeight());
                 add(flash,0,0);
+                take.setVisible(false);
+                scene.setVisible(false);
 
-                // first flash
-                if(flashScreen.isSelected()) {
-                    flash.setFilled(true);
-                    flash.sendToFront();
-                    flash.setVisible(true);
-                    flash.setFillColor(new Color(238, 255, 0));
-                    slateButton.setVisible(false);
-                    docButton.setVisible(false);
-                    startSlateBtn.setVisible(false);
-                    pause(130);
+                playSound("C:/Users/noahl/Documents/Documents/Programming/Projects/ProSlate/resources/Slate Sound WAV.wav");
 
-                    // second flash
-                    if(secondFlash.isSelected()) {
-                        flash.setFillColor(new Color(255, 0, 251));
-                        pause(132);
-                        flash.setVisible(false);
+                if(darkMode.isSelected()){
+                    // first flash
+                    if(flashScreen.isSelected()) {
+                        flash.setFilled(true);
+                        settingsButton.setVisible(false);
+                        flash.sendToFront();
+                        flash.setVisible(true);
+                        flash.setFillColor(new Color(0, 124, 136));
+                        slateButton.setVisible(false);
+                        docButton.setVisible(false);
+                        startSlateBtn.setVisible(false);
+                        pause(130);
+
+                        // second flash
+                        if(secondFlash.isSelected()) {
+                            flash.setFillColor(new Color(114, 9, 145));
+                            pause(132);
+                            flash.setVisible(false);
+                        }
+                        slateButton.setVisible(true);
+                        settingsButton.setVisible(true);
+                        docButton.setVisible(true);
+                        startSlateBtn.setVisible(true);
                     }
-                    slateButton.setVisible(true);
-                    docButton.setVisible(true);
-                    startSlateBtn.setVisible(true);
+                } else {
+                    // first flash
+                    if(flashScreen.isSelected()) {
+                        flash.setFilled(true);
+                        settingsButton.setVisible(false);
+                        flash.sendToFront();
+                        flash.setVisible(true);
+                        flash.setFillColor(new Color(238, 255, 0));
+                        slateButton.setVisible(false);
+                        docButton.setVisible(false);
+                        startSlateBtn.setVisible(false);
+                        pause(130);
+
+                        // second flash
+                        if(secondFlash.isSelected()) {
+                            flash.setFillColor(new Color(255, 0, 251));
+                            pause(132);
+                            flash.setVisible(false);
+                        }
+                        slateButton.setVisible(true);
+                        settingsButton.setVisible(true);
+                        docButton.setVisible(true);
+                        startSlateBtn.setVisible(true);
+                    }
                 }
+
                 flash.setVisible(false);
+                take.setVisible(true);
+                scene.setVisible(true);
                 destroy();
             }
         }).start();
@@ -237,13 +320,29 @@ public class ProSlate extends GraphicsProgram {
 
         // adjusting to dark mode
         if(darkMode.isSelected()){
+            // changing the main background to a custom dark grey
             setBackground(new Color(44, 44, 44));
-            take.setFont(font2Dark);
-            scene.setFont(font1Dark);
+            // changing the slate text color to a custom light grey color
+            take.setForeground(new Color(145, 145, 145));
+            scene.setForeground(new Color(145, 145, 145));
+            //changing other labels back to default
+            settingsHeader.setForeground(new Color(145, 145, 145));
+            credit.setForeground(new Color(145, 145, 145));
+            // changing navBar details back to normal
+            navBar.setFillColor(new Color(25, 35, 40));
+            navIndication[0].setFillColor(new Color(51, 65, 75));
         } else {
+            // changing the main background to default
             setBackground(Color.white);
-            take.setFont(font2Light);
-            scene.setFont(font1Light);
+            // changing the slate text color to default
+            take.setForeground(Color.BLACK);
+            scene.setForeground(Color.BLACK);
+            //changing other labels back to default
+            settingsHeader.setForeground(Color.BLACK);
+            credit.setForeground(Color.BLACK);
+            // changing navBar details back to normal
+            navBar.setFillColor(new Color(138, 182, 194));
+            navIndication[0].setFillColor(new Color(88, 126, 133));
         }
 
         if (currentPg.equals("Slate")) {
