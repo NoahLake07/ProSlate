@@ -1,3 +1,4 @@
+import acm.graphics.GImage;
 import acm.graphics.GLine;
 import acm.graphics.GRect;
 import acm.program.GraphicsProgram;
@@ -7,9 +8,8 @@ import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 import static java.lang.String.valueOf;
 
@@ -18,11 +18,16 @@ public class ProSlate extends GraphicsProgram {
     // system variables
     String systemOS = OsUtils.getOS();
 
+    // gathering resources
+    GImage logo = new GImage("/C://Users//noahl//IdeaProjects//ProSlate//images//ProSlate Logo Large.png/");
+    GImage scenePlusLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
+    GImage sceneSubLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
+    GImage takeAddLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
+    GImage takeSubLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
+
     // creating custom font
-    Font font1Light = new Font("Sans Serif", Font.BOLD, 80);
-    Font font2Light = new Font("Sans Serif", Font.PLAIN, 40);
-    Font font1Dark = new Font("Sans Serif", Font.BOLD, 80);
-    Font font2Dark = new Font("Sans Serif", Font.PLAIN, 40);
+    Font font1 = new Font("Sans Serif", Font.BOLD, 80);
+    Font font2 = new Font("Sans Serif", Font.PLAIN, 40);
 
     //creating checkboxes for settings
     JCheckBox soundCkBox = new JCheckBox("Sound");
@@ -55,12 +60,8 @@ public class ProSlate extends GraphicsProgram {
     JButton docButton = new JButton("Documents");
     JButton startSlateBtn = new JButton("Start");
     JButton settingsButton = new JButton("Settings");
-    JButton addScene = new JButton("(+) Scene");
-    JButton subScene = new JButton("(-) Scene");
     JButton addShot = new JButton("(+) Shot");
     JButton subShot = new JButton("(-) Shot");
-    JButton addTake = new JButton("(+) Take");
-    JButton subTake = new JButton("(-) Take");
 
     // instantiating the navigation bar
     GRect navBar = new GRect(0,0); // will be resized later
@@ -83,6 +84,35 @@ public class ProSlate extends GraphicsProgram {
         createDocumentSystem();
         createSettings();
         updatePage();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent me) {
+
+        Object source = me.getSource();
+
+        if (scenePlusLight.equals(source)) {
+
+                System.out.println("add scene");
+                currentScene++;
+
+        } else if (sceneSubLight.equals(source)) {
+            if(currentScene >1) {
+                System.out.println("sub scene");
+                currentScene--;
+            }
+        } else if (takeAddLight.equals(source)) {
+
+                System.out.println("add take");
+                currentTake++;
+
+        } else if (takeSubLight.equals(source)) {
+            if (currentTake > 1) {
+                System.out.println("sub take");
+            currentTake--;
+            }
+        }
+        updateCounterLabels();
     }
 
     @Override
@@ -111,30 +141,64 @@ public class ProSlate extends GraphicsProgram {
                 print("Page changed to: " + currentPg);
                 updatePage();
                 break;
-            case "Dark Mode":
-                print("Dark Mode Enabled");
-                updatePage();
+            case "C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png":
+                print("new scene");
                 break;
         }
+    }
+
+    private void createSlateCounters(){
+
+        int btnSpacing = 15;
+        int imageResizing = 10;
+
+        scenePlusLight.setSize(scenePlusLight.getWidth()/imageResizing,scenePlusLight.getHeight()/imageResizing);
+        add(scenePlusLight,scene.getX() + scene.getWidth() + btnSpacing,scene.getY() + scene.getHeight()/2 - scenePlusLight.getHeight()/2);
+
+        sceneSubLight.setSize(sceneSubLight.getWidth()/imageResizing,sceneSubLight.getHeight()/imageResizing);
+        add(sceneSubLight,scene.getX() - (btnSpacing + sceneSubLight.getWidth()),scene.getY() + scene.getHeight()/2 - sceneSubLight.getHeight()/2);
+
+        takeAddLight.setSize(takeAddLight.getWidth()/imageResizing,takeAddLight.getHeight()/imageResizing);
+        add(takeAddLight,take.getX() + btnSpacing + take.getWidth(),take.getY() + take.getHeight()/2 - takeAddLight.getHeight()/2);
+
+        takeSubLight.setSize(takeSubLight.getWidth()/imageResizing,takeSubLight.getHeight()/imageResizing);
+        add(takeSubLight,take.getX() - (btnSpacing + takeSubLight.getWidth()),take.getY() + take.getHeight()/2 - takeSubLight.getHeight()/2);
+
+        scenePlusLight.addMouseListener(this);
+        sceneSubLight.addMouseListener(this);
+        takeAddLight.addMouseListener(this);
+        takeSubLight.addMouseListener(this);
+    }
+
+    private void updateCounterLabels(){
+        take.setText("Take " + currentTake);
+        scene.setText("Scene " + currentScene + currentShot);
     }
 
     private void createSlateSystem(){
         // set up padding scalable ratio
         int padding = 10;
 
+        // add logo
+        add(logo);
+        double logoScaling = 0.4;
+        logo.setSize(logo.getWidth()*logoScaling,logo.getHeight()*logoScaling);
+        logo.move(getWidth()-padding-logo.getWidth(),getHeight()- navBar.getHeight()-padding-logo.getHeight());
+
         // scene
         add(scene, getWidth()/padding,getHeight()/padding);
-        scene.setFont(font1Light);
+        scene.setFont(font1);
         scene.setSize(400,80);
 
         // take
         add(take,getWidth()/padding,getHeight()/padding + 100);
-        take.setFont(font2Light);
+        take.setFont(font2);
         take.setSize(400,50);
 
         // adding the start button to the screen
-        add(startSlateBtn, navBar.getX()+navBar.getWidth() - (75 + 30),navBar.getY()-50);
-        print(startSlateBtn.getWidth());
+        add(startSlateBtn, navBar.getX() + padding * 3,navBar.getY() - (padding * 4) - startSlateBtn.getHeight());
+
+        createSlateCounters();
 
         addActionListeners();
     }
@@ -174,6 +238,10 @@ public class ProSlate extends GraphicsProgram {
 
     private void windowsNavBar(){
 
+        Color navBarColor = new Color(138, 182, 194);
+        Color navBtnColorLight = new Color(204, 225, 239);
+        Color navBtnColorDark = new Color(94, 116, 131);
+
         double navBtnY = navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2 - navBar.getHeight()/7;
 
         // creating the main navBar
@@ -181,7 +249,7 @@ public class ProSlate extends GraphicsProgram {
         add(navBar,0-NAV_PADDING,getHeight()-navBar.getHeight());
         navBar.setVisible(true);
         navBar.setFilled(true);
-        navBar.setFillColor(new Color(138, 182, 194));
+        navBar.setFillColor(navBarColor);
 
         // adding the slate navButton
         add(slateButton, NAV_BTN_PADDING*1,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2 - navBar.getHeight()/7);
@@ -191,6 +259,11 @@ public class ProSlate extends GraphicsProgram {
 
         // adding the documents navButton
         add(docButton, getWidth()/2 - 116/2,navBar.getY() + navBar.getHeight()/2 - EST_BTN_HEIGHT/2 - navBar.getHeight()/7);
+
+        docButton.setBackground(navBtnColorLight);
+        settingsButton.setBackground(navBtnColorLight);
+        slateButton.setBackground(navBtnColorLight);
+        startSlateBtn.setBackground(Color.white);
 
         // adding the action listeners to the buttons
         addActionListeners();
@@ -255,8 +328,11 @@ public class ProSlate extends GraphicsProgram {
                 take.setVisible(false);
                 scene.setVisible(false);
 
-                // playSound("C:/Users/noahl/Documents/Documents/Programming/Projects/ProSlate/resources/Slate Sound WAV.wav");
-                playSound("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/sounds/Slate Sound WAV.wav");
+                if(systemOS.contains("Windows")){
+                    playSound("C:/Users/noahl/Documents/Documents/Programming/Projects/ProSlate/resources/Slate Sound WAV.wav");
+                } else if (systemOS.contains("Mac OS")){
+                    playSound("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/sounds/Slate Sound WAV.wav");
+                }
 
                 if(darkMode.isSelected()){
                     // first flash
@@ -318,19 +394,35 @@ public class ProSlate extends GraphicsProgram {
 
     private void updatePage(){
 
+        Color darkModeText = new Color(145, 145, 145);
+        Color darkNavIndication = new Color(51, 65, 75);
+        Color darkBackground = new Color(44, 44, 44);
+
         // adjusting to dark mode
         if(darkMode.isSelected()){
             // changing the main background to a custom dark grey
-            setBackground(new Color(44, 44, 44));
+            setBackground(darkBackground);
             // changing the slate text color to a custom light grey color
-            take.setForeground(new Color(145, 145, 145));
-            scene.setForeground(new Color(145, 145, 145));
+            take.setForeground(darkModeText);
+            scene.setForeground(darkModeText);
             //changing other labels back to default
-            settingsHeader.setForeground(new Color(145, 145, 145));
-            credit.setForeground(new Color(145, 145, 145));
+            settingsHeader.setForeground(darkModeText);
+            credit.setForeground(darkModeText);
             // changing navBar details back to normal
             navBar.setFillColor(new Color(25, 35, 40));
-            navIndication[0].setFillColor(new Color(51, 65, 75));
+            navIndication[0].setFillColor(darkNavIndication);
+            navIndication[1].setFillColor(darkNavIndication);
+            navIndication[2].setFillColor(darkNavIndication);
+            // changing the checkbox colors
+            darkMode.setForeground(darkModeText);
+            darkMode.setBackground(darkBackground);
+            soundCkBox.setForeground(darkModeText);
+            soundCkBox.setBackground(darkBackground);
+            flashScreen.setForeground(darkModeText);
+            flashScreen.setBackground(darkBackground);
+            secondFlash.setForeground(darkModeText);
+            secondFlash.setBackground(darkBackground);
+
         } else {
             // changing the main background to default
             setBackground(Color.white);
@@ -343,6 +435,18 @@ public class ProSlate extends GraphicsProgram {
             // changing navBar details back to normal
             navBar.setFillColor(new Color(138, 182, 194));
             navIndication[0].setFillColor(new Color(88, 126, 133));
+            navIndication[1].setFillColor(new Color(88, 126, 133));
+            navIndication[2].setFillColor(new Color(88, 126, 133));
+            // changing the checkbox colors
+            darkMode.setForeground(Color.BLACK);
+            darkMode.setBackground(Color.WHITE);
+            soundCkBox.setForeground(Color.BLACK);
+            soundCkBox.setBackground(Color.WHITE);
+            flashScreen.setForeground(Color.BLACK);
+            flashScreen.setBackground(Color.WHITE);
+            secondFlash.setForeground(Color.BLACK);
+            secondFlash.setBackground(Color.WHITE);
+
         }
 
         if (currentPg.equals("Slate")) {
@@ -393,12 +497,14 @@ public class ProSlate extends GraphicsProgram {
     }
 
     private void hideSlate(){
+        logo.setVisible(false);
         take.setVisible(false);
         scene.setVisible(false);
         startSlateBtn.setVisible(false);
     }
 
     private void showSlate(){
+        logo.setVisible(true);
         take.setVisible(true);
         scene.setVisible(true);
         startSlateBtn.setVisible(true);
@@ -429,25 +535,6 @@ public class ProSlate extends GraphicsProgram {
         settingsHeader.setVisible(true);
         darkMode.setVisible(true);
     }
-
-    private void fixedPlaySound(String pathname){
-        try {
-            // Open an audio input stream.
-            URL url = this.getClass().getClassLoader().getResource(pathname);
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-            // Get a sound clip resource.
-            Clip clip = AudioSystem.getClip();
-            // Open audio clip and load samples from the audio input stream.
-            clip.open(audioIn);
-            clip.start();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        }
-}
 
     public void playSound(String pathname){
         if(soundCkBox.isSelected() == true) {
