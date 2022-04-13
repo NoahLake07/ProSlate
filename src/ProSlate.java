@@ -18,16 +18,15 @@ public class ProSlate extends GraphicsProgram {
     // system variables
     String systemOS = OsUtils.getOS();
 
-    // gathering resources
-    GImage logo = new GImage("/C://Users//noahl//IdeaProjects//ProSlate//images//ProSlate Logo Large.png/");
-    GImage scenePlusLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
-    GImage sceneSubLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
-    GImage takeAddLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
-    GImage takeSubLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
+    // instantiating the slate variable changers
+    GImage logo,scenePlusLight,sceneSubLight,takeAddLight,takeSubLight;
 
-    // creating custom font
-    Font font1 = new Font("Sans Serif", Font.BOLD, 80);
-    Font font2 = new Font("Sans Serif", Font.PLAIN, 40);
+    // instantiating the settings reset images
+    GImage resetSettings, resetUI;
+
+    // creating custom fonts
+    Font largeHeader = new Font("Sans Serif", Font.BOLD, 80);
+    Font largeSubHeader = new Font("Sans Serif", Font.PLAIN, 40);
 
     //creating checkboxes for settings
     JCheckBox soundCkBox = new JCheckBox("Sound");
@@ -77,12 +76,15 @@ public class ProSlate extends GraphicsProgram {
 
     @Override
     public void init(){
-        new OsUtils();
+        OsUtils utils = new OsUtils();
+        importFrom(utils.getOS());
+
         createNavBar();
         positionNavIndication();
         createSlateSystem();
         createDocumentSystem();
         createSettings();
+
         updatePage();
     }
 
@@ -93,8 +95,8 @@ public class ProSlate extends GraphicsProgram {
 
         if (scenePlusLight.equals(source)) {
 
-                System.out.println("add scene");
-                currentScene++;
+            System.out.println("add scene");
+            currentScene++;
 
         } else if (sceneSubLight.equals(source)) {
             if(currentScene >1) {
@@ -103,13 +105,13 @@ public class ProSlate extends GraphicsProgram {
             }
         } else if (takeAddLight.equals(source)) {
 
-                System.out.println("add take");
-                currentTake++;
+            System.out.println("add take");
+            currentTake++;
 
         } else if (takeSubLight.equals(source)) {
             if (currentTake > 1) {
                 System.out.println("sub take");
-            currentTake--;
+                currentTake--;
             }
         }
         updateCounterLabels();
@@ -144,6 +146,26 @@ public class ProSlate extends GraphicsProgram {
             case "C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png":
                 print("new scene");
                 break;
+        }
+    }
+
+    private void importFrom(String systemOS){
+        if (systemOS.contains("Mac OS")){
+            // MacBook path-names
+            logo = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/ProSlate Logo Large.png");
+            scenePlusLight = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Right Arrow Btn.png");
+            sceneSubLight = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Left Arrow Btn.png");
+            takeAddLight = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Right Arrow Btn.png");
+            takeSubLight = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Left Arrow Btn.png");
+
+        } else if (systemOS.contains("Windows")){
+            // Zephyrus path-names
+            logo = new GImage("/C://Users//noahl//IdeaProjects//ProSlate//images//ProSlate Logo Large.png/");
+            scenePlusLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
+            sceneSubLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
+            takeAddLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
+            takeSubLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
+
         }
     }
 
@@ -187,12 +209,12 @@ public class ProSlate extends GraphicsProgram {
 
         // scene
         add(scene, getWidth()/padding,getHeight()/padding);
-        scene.setFont(font1);
+        scene.setFont(largeHeader);
         scene.setSize(400,80);
 
         // take
         add(take,getWidth()/padding,getHeight()/padding + 100);
-        take.setFont(font2);
+        take.setFont(largeSubHeader);
         take.setSize(400,50);
 
         // adding the start button to the screen
@@ -471,6 +493,7 @@ public class ProSlate extends GraphicsProgram {
             hideSettings();
 
             // showing current page components
+            showDocument();
 
             // updating the navIndication GRects
             navIndication[0].setVisible(false);
@@ -501,6 +524,10 @@ public class ProSlate extends GraphicsProgram {
         take.setVisible(false);
         scene.setVisible(false);
         startSlateBtn.setVisible(false);
+        scenePlusLight.setVisible(false);
+        sceneSubLight.setVisible(false);
+        takeAddLight.setVisible(false);
+        takeSubLight.setVisible(false);
     }
 
     private void showSlate(){
@@ -508,6 +535,10 @@ public class ProSlate extends GraphicsProgram {
         take.setVisible(true);
         scene.setVisible(true);
         startSlateBtn.setVisible(true);
+        scenePlusLight.setVisible(true);
+        sceneSubLight.setVisible(true);
+        takeAddLight.setVisible(true);
+        takeSubLight.setVisible(true);
     }
 
     private void hideDocument(){
