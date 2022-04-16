@@ -1,1 +1,1 @@
-SlatePro Application
+ProSlate Application

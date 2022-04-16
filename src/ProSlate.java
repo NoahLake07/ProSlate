@@ -345,8 +345,8 @@ public class ProSlate extends GraphicsProgram {
         new Thread(new Runnable() {
             public void run() {
                 // instantiating and adding the flash
-                GRect flash = new GRect(getWidth(), getHeight());
-                add(flash,0,0);
+                GRect flash = new GRect(getWidth() + getWidth()/10, getHeight() + getHeight()/10);
+                add(flash,-getWidth()/20,-getWidth()/20);
                 take.setVisible(false);
                 scene.setVisible(false);
 
