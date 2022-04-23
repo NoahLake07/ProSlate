@@ -43,10 +43,10 @@ public class ProSlate extends GraphicsProgram {
 
     // creating global variables for slate
     int currentScene = 1;
-    int currentShot = 1;
+    int currentShot = 0;
     int currentTake = 1;
     JLabel take = new JLabel("Take " + currentTake);
-    JLabel scene = new JLabel("Scene " + currentScene + currentShot);
+    JLabel scene = new JLabel("Scene " + currentScene + alphabet[currentShot]);
 
     // creating global variables for the navigation system
     public final String[] pages = new String[]{ "Slate","Documents" };
