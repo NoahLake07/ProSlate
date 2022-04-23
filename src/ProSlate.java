@@ -19,7 +19,10 @@ public class ProSlate extends GraphicsProgram {
     String systemOS = OsUtils.getOS();
 
     // instantiating the slate variable changers
-    GImage logo,scenePlusLight,sceneSubLight,takeAddLight,takeSubLight;
+    GImage logo, scenePlus, sceneSub, takeAdd, takeSub,shotAdd,shotSub,markerBtn;
+    char[] alphabet = new char[]{
+            'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'
+    };
 
     // instantiating the settings reset images
     GImage resetSettings, resetUI;
@@ -40,7 +43,7 @@ public class ProSlate extends GraphicsProgram {
 
     // creating global variables for slate
     int currentScene = 1;
-    char currentShot = 'a';
+    int currentShot = 1;
     int currentTake = 1;
     JLabel take = new JLabel("Take " + currentTake);
     JLabel scene = new JLabel("Scene " + currentScene + currentShot);
@@ -59,18 +62,16 @@ public class ProSlate extends GraphicsProgram {
     JButton docButton = new JButton("Documents");
     JButton startSlateBtn = new JButton("Start");
     JButton settingsButton = new JButton("Settings");
-    JButton addShot = new JButton("(+) Shot");
-    JButton subShot = new JButton("(-) Shot");
 
     // instantiating the navigation bar
     GRect navBar = new GRect(0,0); // will be resized later
 
     // instantiating the navIndication GRects and GLines
-    GRect[] navIndication = new GRect[]{
-            new GRect(getWidth()/3,navBar.getHeight()),
-            new GRect(getWidth()/3,navBar.getHeight()),
-            new GRect(getWidth()/3,navBar.getHeight()),
-            new GRect(getWidth()/3,navBar.getHeight())};
+    GRect[] navIndication = new GRect[]   {
+    new GRect(getWidth()/3,navBar.getHeight()),
+    new GRect(getWidth()/3,navBar.getHeight()),
+    new GRect(getWidth()/3,navBar.getHeight()),
+    new GRect(getWidth()/3,navBar.getHeight())    };
     GLine divider1 = new GLine(navIndication[1].getX(),navBar.getY(),navIndication[1].getX(),navBar.getY() + navBar.getHeight());
     GLine divider2 = new GLine(navIndication[2].getX(),navBar.getY(),navIndication[2].getX(),navBar.getY() + navBar.getHeight());
 
@@ -93,25 +94,35 @@ public class ProSlate extends GraphicsProgram {
 
         Object source = me.getSource();
 
-        if (scenePlusLight.equals(source)) {
+        if (scenePlus.equals(source)) {
 
             System.out.println("add scene");
             currentScene++;
 
-        } else if (sceneSubLight.equals(source)) {
+        } else if (sceneSub.equals(source)) {
             if(currentScene >1) {
                 System.out.println("sub scene");
                 currentScene--;
             }
-        } else if (takeAddLight.equals(source)) {
+        } else if (takeAdd.equals(source)) {
 
             System.out.println("add take");
             currentTake++;
 
-        } else if (takeSubLight.equals(source)) {
+        } else if (takeSub.equals(source)) {
             if (currentTake > 1) {
                 System.out.println("sub take");
                 currentTake--;
+            }
+        } else if (shotAdd.equals(source)) {
+            if (currentShot < 25) {
+                System.out.println("add shot");
+                currentShot++;
+            }
+        } else if (shotSub.equals(source)) {
+            if (currentShot > 0) {
+                System.out.println("sub shot");
+                currentShot--;
             }
         }
         updateCounterLabels();
@@ -153,19 +164,21 @@ public class ProSlate extends GraphicsProgram {
         if (systemOS.contains("Mac OS")){
             // MacBook path-names
             logo = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/ProSlate Logo Large.png");
-            scenePlusLight = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Right Arrow Btn.png");
-            sceneSubLight = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Left Arrow Btn.png");
-            takeAddLight = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Right Arrow Btn.png");
-            takeSubLight = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Left Arrow Btn.png");
+            scenePlus = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Right Arrow Btn.png");
+            sceneSub = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Left Arrow Btn.png");
+            takeAdd = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Right Arrow Btn.png");
+            takeSub = new GImage("/Users/NL21320/Documents/ProgrammingProjects/ProSlate/images/GRY Left Arrow Btn.png");
 
         } else if (systemOS.contains("Windows")){
             // Zephyrus path-names
             logo = new GImage("/C://Users//noahl//IdeaProjects//ProSlate//images//ProSlate Logo Large.png/");
-            scenePlusLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
-            sceneSubLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
-            takeAddLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
-            takeSubLight = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
-
+            scenePlus = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
+            sceneSub = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
+            takeAdd = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Right Arrow Btn.png");
+            takeSub = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/GRY Left Arrow Btn.png");
+            shotAdd = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/PS-AddShotBtn.png");
+            shotSub = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/PS-SubShotBtn.png");
+            markerBtn = new GImage("C:/Users/noahl/IdeaProjects/ProSlate/images/PS-MarkerBtn.png");
         }
     }
 
@@ -174,27 +187,36 @@ public class ProSlate extends GraphicsProgram {
         int btnSpacing = 15;
         int imageResizing = 10;
 
-        scenePlusLight.setSize(scenePlusLight.getWidth()/imageResizing,scenePlusLight.getHeight()/imageResizing);
-        add(scenePlusLight,scene.getX() + scene.getWidth() + btnSpacing,scene.getY() + scene.getHeight()/2 - scenePlusLight.getHeight()/2);
+        scenePlus.setSize(scenePlus.getWidth()/imageResizing, scenePlus.getHeight()/imageResizing);
+        add(scenePlus,scene.getX() + scene.getWidth() + btnSpacing,scene.getY() + scene.getHeight()/2 - scenePlus.getHeight()/2);
 
-        sceneSubLight.setSize(sceneSubLight.getWidth()/imageResizing,sceneSubLight.getHeight()/imageResizing);
-        add(sceneSubLight,scene.getX() - (btnSpacing + sceneSubLight.getWidth()),scene.getY() + scene.getHeight()/2 - sceneSubLight.getHeight()/2);
+        sceneSub.setSize(sceneSub.getWidth()/imageResizing, sceneSub.getHeight()/imageResizing);
+        add(sceneSub,scene.getX() - (btnSpacing + sceneSub.getWidth()),scene.getY() + scene.getHeight()/2 - sceneSub.getHeight()/2);
 
-        takeAddLight.setSize(takeAddLight.getWidth()/imageResizing,takeAddLight.getHeight()/imageResizing);
-        add(takeAddLight,take.getX() + btnSpacing + take.getWidth(),take.getY() + take.getHeight()/2 - takeAddLight.getHeight()/2);
+        takeAdd.setSize(takeAdd.getWidth()/imageResizing, takeAdd.getHeight()/imageResizing);
+        add(takeAdd,take.getX() + btnSpacing + take.getWidth(),take.getY() + take.getHeight()/2 - takeAdd.getHeight()/2);
 
-        takeSubLight.setSize(takeSubLight.getWidth()/imageResizing,takeSubLight.getHeight()/imageResizing);
-        add(takeSubLight,take.getX() - (btnSpacing + takeSubLight.getWidth()),take.getY() + take.getHeight()/2 - takeSubLight.getHeight()/2);
+        takeSub.setSize(takeSub.getWidth()/imageResizing, takeSub.getHeight()/imageResizing);
+        add(takeSub,take.getX() - (btnSpacing + takeSub.getWidth()),take.getY() + take.getHeight()/2 - takeSub.getHeight()/2);
 
-        scenePlusLight.addMouseListener(this);
-        sceneSubLight.addMouseListener(this);
-        takeAddLight.addMouseListener(this);
-        takeSubLight.addMouseListener(this);
+        shotSub.setSize(shotSub.getWidth()/(imageResizing * 2.5),shotSub.getHeight()/(imageResizing * 2.5));
+        add(shotSub,startSlateBtn.getX() + getWidth()/6,startSlateBtn.getY() + shotSub.getHeight()/8);
+
+        shotAdd.setSize(shotAdd.getWidth()/(imageResizing * 2.5),shotAdd.getHeight()/(imageResizing * 2.5));
+        add(shotAdd,shotSub.getX() + shotSub.getWidth() + getWidth()/40,startSlateBtn.getY() + shotAdd.getHeight()/8);
+
+        scenePlus.addMouseListener(this);
+        sceneSub.addMouseListener(this);
+        takeAdd.addMouseListener(this);
+        takeSub.addMouseListener(this);
+        shotAdd.addMouseListener(this);
+        shotSub.addMouseListener(this);
     }
 
     private void updateCounterLabels(){
         take.setText("Take " + currentTake);
-        scene.setText("Scene " + currentScene + currentShot);
+        scene.setText("Scene " + currentScene + alphabet[currentShot]);
+        System.out.println(alphabet[currentShot]);
     }
 
     private void createSlateSystem(){
@@ -524,10 +546,10 @@ public class ProSlate extends GraphicsProgram {
         take.setVisible(false);
         scene.setVisible(false);
         startSlateBtn.setVisible(false);
-        scenePlusLight.setVisible(false);
-        sceneSubLight.setVisible(false);
-        takeAddLight.setVisible(false);
-        takeSubLight.setVisible(false);
+        scenePlus.setVisible(false);
+        sceneSub.setVisible(false);
+        takeAdd.setVisible(false);
+        takeSub.setVisible(false);
     }
 
     private void showSlate(){
@@ -535,10 +557,10 @@ public class ProSlate extends GraphicsProgram {
         take.setVisible(true);
         scene.setVisible(true);
         startSlateBtn.setVisible(true);
-        scenePlusLight.setVisible(true);
-        sceneSubLight.setVisible(true);
-        takeAddLight.setVisible(true);
-        takeSubLight.setVisible(true);
+        scenePlus.setVisible(true);
+        sceneSub.setVisible(true);
+        takeAdd.setVisible(true);
+        takeSub.setVisible(true);
     }
 
     private void hideDocument(){

@@ -3,8 +3,8 @@
     <output-path>$PROJECT_DIR$/out/artifacts/ProSlate_jar</output-path>
     <root id="archive" name="ProSlate.jar">
       <element id="module-output" name="ProSlate" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Programming Libraries/Dialog.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Programming Libraries/acm.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Documents/Programming/Dependencies/Dialog.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Documents/Programming/Dependencies/acm.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
