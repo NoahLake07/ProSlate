@@ -550,6 +550,8 @@ public class ProSlate extends GraphicsProgram {
         sceneSub.setVisible(false);
         takeAdd.setVisible(false);
         takeSub.setVisible(false);
+        shotSub.setVisible(false);
+        shotAdd.setVisible(false);
     }
 
     private void showSlate(){
@@ -561,6 +563,8 @@ public class ProSlate extends GraphicsProgram {
         sceneSub.setVisible(true);
         takeAdd.setVisible(true);
         takeSub.setVisible(true);
+        shotSub.setVisible(true);
+        shotAdd.setVisible(true);
     }
 
     private void hideDocument(){
